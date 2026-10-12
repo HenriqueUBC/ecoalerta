@@ -1,6 +1,7 @@
 import { mount } from 'svelte'
 import App from './components/App.svelte'
 
+// Detecta Modo Escuro
 if (window.matchMedia('(prefers-color-scheme: dark)')) {
   document.documentElement.setAttribute('data-bs-theme', 'dark')
 }

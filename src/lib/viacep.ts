@@ -18,6 +18,7 @@ export interface InfoCep {
 
 export type ListaInfoCep = InfoCep[]
 
+// Importante para validar a API do ViaCep
 export function isInfoCep(valor : unknown) : valor is InfoCep {
     return (
         typeof valor === 'object' &&
@@ -38,9 +39,17 @@ export function isInfoCep(valor : unknown) : valor is InfoCep {
     )
 }
 
-export async function consultarCep(cep : string) : Promise<InfoCep> {
+export function consultarCep(cep : string) : Promise<InfoCep | string> {
     let cepRequisitado = VIACEP_API_URL.replace('{}', cep)
 
-    return await fetch(cepRequisitado)
-        .then(response => response.json() as unknown as InfoCep)
+    return fetch(cepRequisitado)
+        .then(response => {
+            let cepSujo : unknown = response.json()
+            if (isInfoCep(cepSujo)) {
+                return cepSujo as InfoCep
+            }
+            else {
+                return "CEP não encontrado"
+            }
+        })
 }

@@ -10,6 +10,8 @@
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "devDependencies": {
+    "@supabase/functions-js": "^2.117.3",
+    "@supabase/server": "^1.9.1",
     "@sveltejs/vite-plugin-svelte": "^7.3.0",
     "@tsconfig/svelte": "^5.0.8",
     "@types/node": "^24.13.3",
@@ -19,6 +21,7 @@
     "vite": "^8.3.0"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
     "@sveltestrap/sveltestrap": "^7.1.0"
   }
 }
