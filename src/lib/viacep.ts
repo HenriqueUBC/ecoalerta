@@ -1,4 +1,4 @@
-const VIACEP_API_URL = 'viacep.com.br/ws/{}/json/'
+const VIACEP_API_URL = 'https://viacep.com.br/ws/{}/json/'
 
 export interface InfoCep {
     cep : string,
@@ -14,6 +14,10 @@ export interface InfoCep {
     gia : string,
     ddd : string,
     siafi : string
+}
+
+export interface ErroInfoCep {
+    erro : boolean
 }
 
 export type ListaInfoCep = InfoCep[]
@@ -39,17 +43,38 @@ export function isInfoCep(valor : unknown) : valor is InfoCep {
     )
 }
 
-export function consultarCep(cep : string) : Promise<InfoCep | string> {
+export function isErroInfoCep(valor : unknown) : valor is ErroInfoCep {
+    return (
+        typeof valor === 'object' &&
+        valor !== null &&
+        typeof (valor as ErroInfoCep).erro === 'boolean'
+    )
+}
+
+export function isCepValido(cep : string) : boolean {
+    const VALIDA_CEP = /^[0-9]{8}$/
+
+    return VALIDA_CEP.test(cep)
+}
+
+export async function consultarCep(cep : string) : Promise<InfoCep | ErroInfoCep> {
     let cepRequisitado = VIACEP_API_URL.replace('{}', cep)
 
-    return fetch(cepRequisitado)
-        .then(response => {
-            let cepSujo : unknown = response.json()
-            if (isInfoCep(cepSujo)) {
-                return cepSujo as InfoCep
-            }
-            else {
-                return "CEP não encontrado"
-            }
-        })
+    let respostainicial = await fetch(cepRequisitado)
+
+    if (!respostainicial.ok) {
+        throw new Error(`ViaCep retornou com erro: ${respostainicial.status} / ${respostainicial.statusText}`)
+    }
+    
+    let respostaJson = await respostainicial.json()
+
+    if (isInfoCep(respostaJson)) {
+        return respostaJson as InfoCep
+    }
+    else if (isErroInfoCep(respostaJson)) {
+        return respostaJson as ErroInfoCep
+    }
+    else {
+        throw new Error("Operação falhou")
+    }
 }
