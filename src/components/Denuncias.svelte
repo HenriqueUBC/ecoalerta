@@ -13,7 +13,7 @@ function timestampToBRInfo(ts : string) : string {
 </script>
 
 <Container sm>
-    <Row cols={{lg: 3, md: 2, sm: 1}}>
+    <Row cols={{lg: 2, md: 2, sm: 1}}>
         {#each denuncias as denuncia}
             <Col>
                 <Card body>

@@ -14,7 +14,8 @@
     CardText, 
     CardSubtitle,
     Modal,
-    CardFooter} from '@sveltestrap/sveltestrap'
+    CardFooter,
+    Alert} from '@sveltestrap/sveltestrap'
   import { consultarCep, isCepValido, isErroInfoCep, isInfoCep, type ErroInfoCep, type InfoCep } from '../lib/viacep';
     import DenunciaForm from './DenunciaForm.svelte';
     import { buscarDenuncias } from '../lib/supabasecalls';
@@ -62,15 +63,19 @@
 
 <Styles />
 
-<Container sm class="p-3">
-
+<Container sm class="p-3" fluid>
+  <Alert color="success" class="text-center">
+    <h1>ECOALERTA</h1>
+    <h6>Projeto de IE 2 por alunos da Universidade Braz Cubas</h6>
+    <p>Pesquise um CEP e verifique se há denuncias de descarte iregular de lixo em uma rua</p>
+  </Alert>
   <Card>
     <CardHeader>
       <CardTitle>Pesquisar CEP:</CardTitle>
     </CardHeader>
     <CardBody>
         <Form on:submit={(e) => cepSubmit(e)}>
-          <FormGroup floating label="Digite seu CPF Aqui">
+          <FormGroup floating label="Digite seu CEP Aqui">
             <Input required maxlength={8} pattern="[0-9.]*" bind:value={inputCep}></Input>
             <br>
             <Button type="submit" color="primary">Procurar Denuncias...</Button>
@@ -107,16 +112,6 @@
           </CardFooter>
         </Card>
         <br>
-        {#await buscarDenuncias(ic)}
-          <Spinner color="secondary"></Spinner>
-          <p>Procurando Denuncias...</p>
-        {:then resDenuncias} 
-          {#if resDenuncias.denuncias.length === 0}
-            <p>Nenhuma denuncia foi encontrado nesse endereço, seja o primeiro a reportar!</p>
-          {:else}
-            <Denuncias denuncias={resDenuncias.denuncias}></Denuncias>
-          {/if}
-        {/await}
         <Modal isOpen={abrirFormsDeDenuncia} toggle={toggleFormsDenuncia}>
           <DenunciaForm cep={ultimoCep}></DenunciaForm>
         </Modal>
@@ -142,6 +137,16 @@
             </CardText>
           </CardBody>
         </Card>
+    {/await}
+    {#await buscarDenuncias(ultimoCep)}
+      <Spinner color="secondary"></Spinner>
+      <p>Procurando Denuncias...</p>
+    {:then resDenuncias} 
+      {#if resDenuncias.denuncias.length === 0}
+        <p>Nenhuma denuncia foi encontrado nesse endereço, seja o primeiro a reportar!</p>
+      {:else}
+        <Denuncias denuncias={resDenuncias.denuncias}></Denuncias>
+      {/if}
     {/await}
   {/if}
 

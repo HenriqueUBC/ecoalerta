@@ -59,9 +59,9 @@ export function isResBuscaDenuncia (rbd : unknown) : rbd is ResBuscaDenuncia {
     )
 }
 
-export async function buscarDenuncias(infoCep : InfoCep) {
+export async function buscarDenuncias(cep : string) {
     let req : ReqBuscaDenuncia = {
-        cep: infoCep.cep,
+        cep: cep,
     }
 
     const { data, error } = await sb.functions.invoke('buscar-denuncias', {
