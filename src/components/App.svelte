@@ -105,16 +105,8 @@
               <a href={infoCepToMapsURL(ic)} target="_blank">Link da localidade no Google Maps</a>
             </CardText>
           </CardBody>
-          <CardFooter>
-            <Button color="primary" on:click={toggleFormsDenuncia}>
-              Postar nova denuncia a este CEP
-            </Button>
-          </CardFooter>
         </Card>
         <br>
-        <Modal isOpen={abrirFormsDeDenuncia} toggle={toggleFormsDenuncia}>
-          <DenunciaForm cep={ultimoCep}></DenunciaForm>
-        </Modal>
       {/if}
       {#if isErroInfoCep(ic)}
         <Card>
@@ -126,7 +118,7 @@
     {:catch erro}
         <Card>
           <CardHeader>
-            <CardTitle>Erro na procura do CEP</CardTitle>
+            <CardTitle>Erro na procura do CEP ou CEP não foi encontrado</CardTitle>
           </CardHeader>
           <CardBody>
             <CardSubtitle>
@@ -141,7 +133,13 @@
     {#await buscarDenuncias(ultimoCep)}
       <Spinner color="secondary"></Spinner>
       <p>Procurando Denuncias...</p>
-    {:then resDenuncias} 
+    {:then resDenuncias}
+        <Button color="primary" on:click={toggleFormsDenuncia}>
+          Postar nova denuncia a este CEP
+        </Button>
+        <Modal isOpen={abrirFormsDeDenuncia} toggle={toggleFormsDenuncia}>
+          <DenunciaForm cep={ultimoCep} rua_id={resDenuncias.rua.id ?? ''}></DenunciaForm>
+        </Modal>
       {#if resDenuncias.denuncias.length === 0}
         <p>Nenhuma denuncia foi encontrado nesse endereço, seja o primeiro a reportar!</p>
       {:else}

@@ -3,7 +3,13 @@
 import { Container, Row, Col, Card, Image } from "@sveltestrap/sveltestrap"
 import { type Denuncia } from "../lib/supabasecalls";
 
-export let denuncias : Denuncia[]
+interface Props {
+    denuncias : Denuncia[]
+}
+
+const {
+    denuncias
+}: Props = $props()
 
 function timestampToBRInfo(ts : string) : string {
     let dt = new Date(ts)

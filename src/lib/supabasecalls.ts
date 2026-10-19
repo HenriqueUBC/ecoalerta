@@ -12,6 +12,13 @@ export interface ResBuscaDenuncia {
     denuncias : Denuncia[]
 }
 
+export interface ReqCriaDenuncia {
+    rua_id : string
+    cep : string
+    descricao : string
+    foto : File
+}
+
 export interface Rua {
     id : string,
     cep : string,
@@ -81,6 +88,20 @@ export async function buscarDenuncias(cep : string) {
     return data
 }
 
-export async function postarDenuncia() {
+export async function postarDenuncia(req : ReqCriaDenuncia) {
+    let fd = new FormData()
 
+    Object.keys(req).forEach(key => {
+        fd.append(key, req[key as keyof typeof req]) // hacks tenebrosos
+    })
+
+    const {data, error} = await sb.functions.invoke('criar-denuncia', {
+        body: fd
+    })
+
+    if (error) {
+        throw error
+    }
+
+    return data
 }
